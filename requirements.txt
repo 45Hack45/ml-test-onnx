@@ -1,5 +1,13 @@
 fastapi
+pydantic_settings
+python-multipart
+swagger-ui-bundle
+pdfplumber
 uvicorn
 numpy
 sqlmodel
 alembic
+ONNX
+ONNXRuntime
+transformers
+huggingface_hub

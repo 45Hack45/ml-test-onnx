@@ -1,10 +1,27 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes.api import router as api_router
-from app.database import init_db
+from FastEmbed.QAnswers.routes.api import router as api_router
+from FastEmbed.core.database import init_database
+from FastEmbed.core.embedding import init_embedding_engine
+
+from contextlib import asynccontextmanager
 
 
-app = FastAPI()
+@asynccontextmanager
+async def application_lifecycle(app: FastAPI):
+
+    # Initialize database
+    await init_database()
+
+    # Initialize embedding engine
+    init_embedding_engine()
+
+    yield
+
+    # Clean up after application shutdown
+
+
+app = FastAPI(lifespan=application_lifecycle)
 
 origins = [
     "http://localhost",
@@ -21,6 +38,3 @@ app.add_middleware(
 
 
 app.include_router(api_router)
-
-# Initialize the database
-init_db()
