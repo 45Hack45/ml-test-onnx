@@ -34,4 +34,9 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+async def root():
+    return {"message": "Server is running"}
+
+
 app.include_router(api_router)

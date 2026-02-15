@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Annotated, Optional, TYPE_CHECKING
 
 from sqlmodel import SQLModel, Field, Relationship
 
@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class Document(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True, index=True)
     name: str
     chunks: list["DocumentChunk"] = Relationship(
         back_populates="document", cascade_delete=True
@@ -15,13 +15,13 @@ class Document(SQLModel, table=True):
 
 
 class DocumentChunk(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True, index=True)
     document_id: int = Field(default=None, foreign_key="document.id")
-    document: list[Document] = Relationship(back_populates="chunks")
-    line_number: int
+    document: Document = Relationship(back_populates="chunks")
+    line_number: Annotated[int, Field(description="Line number in the source document")]
 
-    content: str
-    embedding: bytes = Field()
+    content: Annotated[str, Field(description="Source text")]
+    embedding: bytes = Field(description="Embedding of the source text")
 
     chats: list["Chat"] = Relationship(back_populates="source_document")
 

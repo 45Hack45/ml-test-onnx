@@ -14,7 +14,9 @@ async def query_question(
     chat_query: ChatQuery, session: Session = Depends(get_session)
 ) -> ChatRead:
     """
-    Handle a chat query.
+    Query information from the system documents.
+    If k is 1 it will return the best match else
+    it will return a random one of the best k matches
     """
     return await chat_service.query_question(chat_query, session)
 

@@ -20,6 +20,8 @@ class DocumentService:
         Args:
             file (UploadFile): The document to upload.
             session (Session): The database session.
+            min_length (int, optional): The minimum word count of a line,
+                smaller lines are combined into a single line. Defaults to 30.
 
         Returns:
             Document: The uploaded document.

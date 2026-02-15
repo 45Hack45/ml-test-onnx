@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, Query
 
 from FastEmbed.core.database import get_session
 from FastEmbed.QAnswers.models.document import Document, DocumentRead
 from FastEmbed.QAnswers.services.document import DocumentService
 from sqlmodel import Session
-from typing import List
+from typing import Annotated, List
 from fastapi import UploadFile
 
 router = APIRouter(prefix="/documents", tags=["documents"])
@@ -13,12 +13,16 @@ document_service = DocumentService()
 
 @router.post("/upload", response_model=DocumentRead)
 def create_document(
-    file: UploadFile,
-    min_word_count: int = 30,
+    file: Annotated[UploadFile, File(description="The document to upload, TXT or PDF")],
+    min_word_count: int = Query(
+        default=30,
+        description="Line minimum word count, "
+        "smaller lines are combined into a single line",
+    ),
     session: Session = Depends(get_session),
 ) -> Document:
     """
-    Create a new document.
+    Upload a document to the system.
     """
     return document_service.upload_document(file, session, min_length=min_word_count)
 
