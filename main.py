@@ -10,9 +10,6 @@ from contextlib import asynccontextmanager
 @asynccontextmanager
 async def application_lifecycle(app: FastAPI):
 
-    # Initialize database
-    await init_database()
-
     # Initialize embedding engine
     init_embedding_engine()
 

@@ -5,6 +5,8 @@ from sqlalchemy import pool
 from sqlmodel import SQLModel
 from FastEmbed.config import Config
 
+from FastEmbed import *
+
 from alembic import context
 
 database_url = Config.DATABASE_URL
