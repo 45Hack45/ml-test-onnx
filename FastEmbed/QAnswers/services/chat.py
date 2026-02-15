@@ -25,8 +25,10 @@ class ChatService:
             select(DocumentChunk).where(DocumentChunk.embedding.is_not(None))
         ).all()
 
-        if not chunks_with_embeddings:
-            raise HTTPException(status_code=404, detail="No documents found")
+        if len(chunks_with_embeddings) == 0:
+            raise HTTPException(
+                status_code=404, detail="No documents found in the system"
+            )
 
         # Embed the query
         query_embedding = embedding_engine.embed_query_text(query.query)
@@ -74,12 +76,18 @@ class ChatService:
         )
         session.add(chat)
         session.commit()
+        session.refresh(chat)
+
+        if selected_chunk.document:
+            source_document_name = selected_chunk.document.name or "none"
+        else:
+            source_document_name = "none"
 
         return ChatRead(
             id=chat.id,
             query=query.query,
             response=selected_chunk.content,
-            source_document_name=selected_chunk.document.name,
+            source_document_name=source_document_name,
             source_line=selected_chunk.line_number,
             confidence=confidence,
         )
